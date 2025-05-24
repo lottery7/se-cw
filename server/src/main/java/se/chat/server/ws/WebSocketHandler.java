@@ -24,7 +24,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private final Lock dataLock = new ReentrantLock();
     private final Map<String, String> userChat = new HashMap<>();
-    private final Map<String, Set<String>> chatUsers = new HashMap<>();
+    private final Map<String, Set<WebSocketSession>> chatUsers = new HashMap<>();
 
 
     public WebSocketHandler(DynamicQueueService dynamicQueueService, RabbitTemplate rabbitTemplate) {
@@ -32,15 +32,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    private void addUserToChat(String chatID, String userID) {
+    private void addUserToChat(String chatID, WebSocketSession session) {
         dataLock.lock();
+        String userID = session.getId();
         try {
             createChatIfNotExists(chatID);
             if (userChat.containsKey(userID)) {
-                chatUsers.get(chatID).remove(userID);
+                chatUsers.get(chatID).removeIf(s -> s.getId().equals(userID));
             }
             userChat.put(userID, chatID);
-            chatUsers.get(chatID).add(userID);
+            chatUsers.get(chatID).add(session);
         } finally {
             dataLock.unlock();
         }
@@ -65,12 +66,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         if (text.startsWith(CONNECT_COMMAND)) {
             String chatID = text.substring(CONNECT_COMMAND.length() + 1);
-            addUserToChat(chatID, wsID);
+            addUserToChat(chatID, session);
             session.sendMessage(new TextMessage("Connected to " + chatID));
         } else {
             dataLock.lock();
             try {
-                rabbitTemplate.convertAndSend(userChat.get(wsID), message);
+                rabbitTemplate.convertAndSend(userChat.get(wsID), text);
             } finally {
                 dataLock.unlock();
             }
@@ -85,7 +86,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
 
         public void handleMessage(String message) {
-            System.out.println(queueName + ": " + message);
+            dataLock.lock();
+            try {
+                for (WebSocketSession session : chatUsers.get(queueName)) {
+                    if (session.isOpen()) {
+                        session.sendMessage(new TextMessage(message));
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                dataLock.unlock();
+            }
         }
     }
 }
