@@ -64,9 +64,9 @@ jobs:
       - name: Wait for services to be ready
         run: |
           cd client
-          java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar base | tee output.log &
+          java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar base >output.txt &
           sleep 50
-          if grep -q "Connected to server" output.log; then
+          if grep -q "Connected to server" output.txt; then
             echo "Server connected successfully. Killing process."
             pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
           else
