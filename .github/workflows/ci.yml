@@ -56,9 +56,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build and Start Services
+      - name: Build and Start Client
         run: |
-          docker-compose up --build -d
+          cd client
+          docker-compose up --build
+
+      - name: Build and Start Server
+        run: |
+          cd server
+          docker-compose up --build
 
       - name: Wait for services to be ready
         run: |
