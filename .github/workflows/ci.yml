@@ -67,6 +67,7 @@ jobs:
           java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar base >output.txt &
           for i in {1..1000}; do
             sleep 1
+            cat output.txt | tail -n 3
             if grep -q "Connected to server" output.txt; then
               echo "Server connected successfully. Killing process."
               pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
