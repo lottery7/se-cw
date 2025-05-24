@@ -65,16 +65,17 @@ jobs:
         run: |
           cd client
           java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar base >output.txt &
-          sleep 50
-          if grep -q "Connected to server" output.txt; then
-            echo "Server connected successfully. Killing process."
-            pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
-          else
-            echo "Server connection failed. Exiting with error."
-            ls
-            cat output.txt
-            exit 1
-          fi
+          for i in {1..1000}; do
+            sleep 1
+            if grep -q "Connected to server" output.txt; then
+              echo "Server connected successfully. Killing process."
+              pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
+            fi
+          done
+          echo "Server connection failed. Exiting with error."
+          ls
+          cat output.txt
+          exit 1
 
       - name: Stop services
         run: |
