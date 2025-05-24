@@ -21,11 +21,6 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Docker Compose
-        uses: docker/setup-compose-action@v1
-        with:
-          version: latest
-
       - name: Cache Client Gradle dependencies
         uses: actions/cache@v4
         with:
@@ -55,7 +50,7 @@ jobs:
           ./gradlew bootJar
 
       - name: Set up Docker Compose
-        uses: docker/compose-action@v2
+        uses: docker/compose-action@v1
 
       - name: Build and Start Services
         run: |
