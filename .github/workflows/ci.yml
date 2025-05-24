@@ -22,7 +22,9 @@ jobs:
           java-version: '21'
 
       - name: Set up Docker Compose
-        uses: docker/compose-action@v4
+        uses: docker/setup-compose-action@v1
+        with:
+        version: latest
 
       - name: Cache Client Gradle dependencies
         uses: actions/cache@v4
