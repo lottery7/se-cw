@@ -78,4 +78,7 @@ jobs:
 
       - name: Stop services
         run: |
+          cd client
+          docker-compose down
+          cd ../server
           docker-compose down
