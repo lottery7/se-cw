@@ -63,13 +63,16 @@ jobs:
 
       - name: Wait for services to be ready
         run: |
-          for i in {1..10}; do
-            if curl -s http://localhost:8080/health | grep "UP"; then
-              echo "Client is up"
-              break
-            fi
-            sleep 5
-          done
+          cd client
+          java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar base | tee output.log &
+          sleep 5
+          if grep -q "Connected to server" output.log; then
+            echo "Server connected successfully. Killing process."
+            pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
+          else
+            echo "Server connection failed. Exiting with error."
+            exit 1
+          fi
 
       - name: Stop services
         run: |
