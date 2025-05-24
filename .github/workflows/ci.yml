@@ -42,12 +42,12 @@ jobs:
       - name: Build Client with Gradle
         run: |
           cd client
-          ./gradlew bootJar
+          sudo ./gradlew bootJar
 
       - name: Build Server with Gradle
         run: |
           cd server
-          ./gradlew bootJar
+          sudo ./gradlew bootJar
 
       - name: Install Docker Compose
         run: |
