@@ -71,8 +71,8 @@ jobs:
               exit 0
             fi
           done
-          pkill 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
-          if grep -q "Connected to server" output.txt; then
+          pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
+          if grep -q "Started ClientApplication" output.txt; then
             echo "Server connected successfully. Killing process."
             exit 0
           fi
