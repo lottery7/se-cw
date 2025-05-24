@@ -1,0 +1,16 @@
+services:
+  rabbitmq:
+    image: 'rabbitmq:latest'
+    environment:
+      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_USER: user
+    ports:
+      - "5672:5672"
+
+  server:
+    build: .
+    container_name: server
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8080:8080"
