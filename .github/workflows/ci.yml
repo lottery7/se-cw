@@ -60,11 +60,6 @@ jobs:
         run: |
           cd server
           docker-compose up --build -d
-
-      - name: Build and Start Server
-        run: |
-          cd server
-          docker-compose up --build -d
           echo "Waiting for Docker containers to be healthy..."
           while ! docker-compose ps | grep -q "healthy"; do
             echo "Still waiting..."
