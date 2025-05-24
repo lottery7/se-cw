@@ -59,12 +59,12 @@ jobs:
       - name: Build and Start Client
         run: |
           cd client
-          docker-compose up --build
+          docker-compose up --build -d
 
       - name: Build and Start Server
         run: |
           cd server
-          docker-compose up --build
+          docker-compose up --build -d
 
       - name: Wait for services to be ready
         run: |
