@@ -41,8 +41,9 @@ jobs:
 
       - name: Build Client with Gradle
         run: |
-          chmod +x client/gradlew
-          ./client/gradlew bootJar
+          cd client
+          chmod +x gradlew
+          ./gradlew bootJar
 
       - name: Build Server with Gradle
         run: |
