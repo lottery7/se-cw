@@ -24,7 +24,7 @@ jobs:
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
         with:
-        version: latest
+          version: latest
 
       - name: Cache Client Gradle dependencies
         uses: actions/cache@v4
