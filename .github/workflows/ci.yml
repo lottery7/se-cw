@@ -60,10 +60,7 @@ jobs:
         run: |
           cd server
           docker-compose up --build -d
-
-      - name: Wait for services to be ready
-        run: |
-          cd client
+          cd ../client
           java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar base >output.txt &
           for i in {1..30}; do
             sleep 1
