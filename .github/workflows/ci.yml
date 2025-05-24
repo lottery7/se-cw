@@ -47,7 +47,9 @@ jobs:
 
       - name: Build Server with Gradle
         run: |
-          sudo server/gradlew bootJar
+          cd server
+          chmod +x gradlew
+          ./gradlew bootJar
 
       - name: Install Docker Compose
         run: |
