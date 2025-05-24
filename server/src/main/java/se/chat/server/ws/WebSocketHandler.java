@@ -1,5 +1,6 @@
 package se.chat.server.ws;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -16,6 +17,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component
+@Slf4j
 public class WebSocketHandler extends TextWebSocketHandler {
     public static String CONNECT_COMMAND = "/connect";
 
@@ -38,7 +40,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
         try {
             createChatIfNotExists(chatID);
             if (userChat.containsKey(userID)) {
-                chatUsers.get(chatID).removeIf(s -> s.getId().equals(userID));
+                chatUsers.get(chatID).removeIf(s -> {
+                    log.info("{} == ? {}", s.getId(), userID);
+                    return s.getId().equals(userID);
+                });
             }
             userChat.put(userID, chatID);
             chatUsers.get(chatID).add(session);
@@ -89,7 +94,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             dataLock.lock();
             try {
                 for (WebSocketSession session : chatUsers.get(queueName)) {
-                    if (session.isOpen()) {
+                    if (session.isOpen() && userChat.get(session.getId()).equals(queueName)) {
                         session.sendMessage(new TextMessage(message));
                     }
                 }
