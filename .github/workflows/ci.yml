@@ -65,7 +65,7 @@ jobs:
         run: |
           cd client
           java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar base | tee output.log &
-          sleep 5
+          sleep 50
           if grep -q "Connected to server" output.log; then
             echo "Server connected successfully. Killing process."
             pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
