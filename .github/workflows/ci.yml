@@ -71,6 +71,8 @@ jobs:
             pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
           else
             echo "Server connection failed. Exiting with error."
+            ls
+            cat output.txt
             exit 1
           fi
 
