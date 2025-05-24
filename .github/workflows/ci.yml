@@ -59,12 +59,7 @@ jobs:
       - name: Build and Start Server
         run: |
           cd server
-          docker-compose up --build -d
-          echo "Waiting for Docker containers to be healthy..."
-          while ! docker-compose ps | grep -q "healthy"; do
-            echo "Still waiting..."
-            sleep 5
-          done
+          docker-compose up --build
 
       - name: Stop services
         run: |
