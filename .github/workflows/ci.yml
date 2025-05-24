@@ -61,22 +61,15 @@ jobs:
           cd server
           docker-compose up --build -d
 
-      - name: Wait for services to be ready
+      - name: Build and Start Server
         run: |
-          cd client
-          java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar base >output.txt &
-          for i in {1..1000}; do
-            sleep 1
-            cat output.txt | tail -n 3
-            if grep -q "Connected to server" output.txt; then
-              echo "Server connected successfully. Killing process."
-              pkill -f 'java -jar ./build/libs/client-0.0.1-SNAPSHOT.jar'
-            fi
+          cd server
+          docker-compose up --build -d
+          echo "Waiting for Docker containers to be healthy..."
+          while ! docker-compose ps | grep -q "healthy"; do
+            echo "Still waiting..."
+            sleep 5
           done
-          echo "Server connection failed. Exiting with error."
-          ls
-          cat output.txt
-          exit 1
 
       - name: Stop services
         run: |
